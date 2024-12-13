@@ -16,6 +16,6 @@ public class AuthorizationService implements UserDetailsService {
     //Serve para consultar os dados para o Springboot, no caso entrega o usuário para o SpringSecurity
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByUsername(username);
+        return repository.findByUsernameOrEmail(username);
     }
 }

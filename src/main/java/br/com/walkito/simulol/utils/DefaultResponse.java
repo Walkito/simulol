@@ -5,23 +5,17 @@ import org.springframework.http.HttpStatusCode;
 public class DefaultResponse {
     private String message;
     private Object object;
-    private HttpStatusCode httpStatusCode;
+    private int httpStatusCode;
 
     public DefaultResponse(){
 
     }
 
-    public DefaultResponse(String message, Object object, HttpStatusCode httpStatusCode) {
-        this.message = message;
-        this.object = object;
-        this.httpStatusCode = httpStatusCode;
-    }
-
-    public HttpStatusCode getHttpStatusCode() {
+    public int getHttpStatusCode() {
         return httpStatusCode;
     }
 
-    public void setHttpStatusCode(HttpStatusCode httpStatusCode) {
+    public void setHttpStatusCode(int httpStatusCode) {
         this.httpStatusCode = httpStatusCode;
     }
 

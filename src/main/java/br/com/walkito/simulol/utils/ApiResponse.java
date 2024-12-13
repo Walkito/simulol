@@ -6,6 +6,6 @@ import org.springframework.http.ResponseEntity;
 public class ApiResponse extends ResponseEntity {
 
     public ApiResponse(DefaultResponse response){
-        super(response, response.getHttpStatusCode());
+        super(response, HttpStatusCode.valueOf(response.getHttpStatusCode()));
     }
 }
