@@ -1,4 +1,4 @@
-package br.com.walkito.simulol.models.role;
+package br.com.walkito.simulol.models.enums;
 
 public enum Role {
     ADMIN("admin"),

@@ -1,15 +1,19 @@
 package br.com.walkito.simulol.services;
 
 import br.com.walkito.simulol.models.ErroMessages;
-import br.com.walkito.simulol.models.role.Role;
+import br.com.walkito.simulol.models.gameSession.GameSession;
 import br.com.walkito.simulol.models.user.LoginDTO;
 import br.com.walkito.simulol.models.user.User;
 import br.com.walkito.simulol.models.user.UserRepository;
+import br.com.walkito.simulol.models.user.UserResponse;
 import br.com.walkito.simulol.services.security.TokenService;
 import br.com.walkito.simulol.utils.ApiResponse;
 import br.com.walkito.simulol.utils.DefaultResponse;
 import br.com.walkito.simulol.utils.Utils;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +21,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -28,6 +35,9 @@ public class UserService {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private ModelMapper mapper;
 
     @Transactional
     public ApiResponse createUser(User user) {
@@ -54,10 +64,47 @@ public class UserService {
             response.setObject(null);
             response.setHttpStatusCode(HttpStatus.BAD_REQUEST.value());
         } catch (Exception e) {
-            e.printStackTrace();
-            response.setMessage(ErroMessages.INTERNAL_SERVER_ERROR.getMensagemErro());
+            response = Utils.getDefaultErrorResponse(e);
+        }
+
+        return new ApiResponse(response);
+    }
+
+    @Transactional
+    public ApiResponse editUser(User user){
+        DefaultResponse response = new DefaultResponse();
+
+        try{
+            String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+            user.setPassword(encryptedPassword);
+
+            UserResponse editedUser = mapper.map(userRepository.save(user), UserResponse.class);
+
+            response.setMessage("Usuário atualizado com sucesso!");
+            response.setObject(editedUser);
+            response.setHttpStatusCode(HttpStatus.OK.value());
+        } catch (Exception e){
+            response = Utils.getDefaultErrorResponse(e);
+        }
+
+        return new ApiResponse(response);
+    }
+
+    @Transactional
+    public ApiResponse deleteUser(String username){
+        DefaultResponse response = new DefaultResponse();
+
+        try{
+            User findedUser = userRepository.findByUsernameOrEmail(username);
+            if(!findedUser.getUsername().isEmpty()){
+                userRepository.delete(findedUser);
+            }
+
+            response.setMessage("Usuário excluído com sucesso.");
             response.setObject(null);
-            response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setHttpStatusCode(HttpStatus.OK.value());
+        } catch (Exception e){
+            response = Utils.getDefaultErrorResponse(e);
         }
 
         return new ApiResponse(response);
@@ -76,11 +123,30 @@ public class UserService {
             response.setObject(token);
             response.setMessage("Login realizado com sucesso.");
         } catch (Exception e) {
-            e.printStackTrace();
-            response.setMessage(ErroMessages.INTERNAL_SERVER_ERROR.getMensagemErro());
-            response.setObject(null);
-            response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response = Utils.getDefaultErrorResponse(e);
         }
+
         return new ApiResponse(response);
     }
+
+    public ApiResponse getGameSessions(String id){
+        DefaultResponse response = new DefaultResponse();
+
+        try{
+            Optional<User> user = userRepository.findById(id);
+
+            if(user.isPresent()){
+                List<GameSession> gameSessions = user.get().getGameSessions();
+
+                response.setMessage("Sessões encontradas com sucesso!");
+                response.setObject(gameSessions);
+                response.setHttpStatusCode(HttpStatus.OK.value());
+            }
+        } catch (Exception e){
+            response = Utils.getDefaultErrorResponse(e);
+        }
+
+        return new ApiResponse(response);
+    }
+
 }

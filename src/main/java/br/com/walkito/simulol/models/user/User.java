@@ -1,28 +1,36 @@
 package br.com.walkito.simulol.models.user;
 
-import br.com.walkito.simulol.models.role.Role;
+import br.com.walkito.simulol.models.gameSession.GameSession;
+import br.com.walkito.simulol.models.enums.Role;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Document("users")
+@Document(collection = "users")
 public class User implements UserDetails {
     @Id
     private String id;
+
     @Indexed(unique = true)
     private String username;
+
     private String password;
+
     @Indexed(unique = true)
     private String email;
+
     private boolean emailConfirmed;
+
     private Role role;
+
+    private List<GameSession> gameSessions = new ArrayList<>();
 
     public User() {
     }
@@ -33,6 +41,10 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.role = Role.USER;
+    }
+
+    public List<GameSession> getGameSessions() {
+        return gameSessions;
     }
 
     public Role getRole() {

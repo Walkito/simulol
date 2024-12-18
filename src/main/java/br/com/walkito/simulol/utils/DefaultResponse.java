@@ -7,6 +7,12 @@ public class DefaultResponse {
     private Object object;
     private int httpStatusCode;
 
+    public DefaultResponse(String message, int httpStatusCode, Object object) {
+        this.message = message;
+        this.httpStatusCode = httpStatusCode;
+        this.object = object;
+    }
+
     public DefaultResponse(){
 
     }

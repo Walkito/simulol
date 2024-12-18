@@ -13,6 +13,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping(path = "/gameSessions")
+    public ApiResponse getGameSessions(@RequestParam(name = "id") String id){
+        return userService.getGameSessions(id);
+    }
+
     @PostMapping
     public ApiResponse createUser(@RequestBody User user){
         return userService.createUser(user);
@@ -21,5 +26,15 @@ public class UserController {
     @PostMapping(path = "/login")
     public ApiResponse doLogin(@RequestBody LoginDTO loginDTO){
         return userService.doLogin(loginDTO);
+    }
+
+    @PutMapping(path = "/edit")
+    public ApiResponse editUser(@RequestBody User user){
+        return userService.editUser(user);
+    }
+
+    @DeleteMapping(path = "/delete")
+    public ApiResponse deleteUser(@RequestParam("user") String username){
+        return userService.deleteUser(username);
     }
 }
