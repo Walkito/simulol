@@ -21,6 +21,7 @@ public class Player {
 
     private Function primaryFunction;
 
+
     private int gameVision;
 
     private int decision;
