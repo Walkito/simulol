@@ -1,6 +1,6 @@
 package br.com.walkito.simulol.utils;
 
-import br.com.walkito.simulol.models.ErroMessages;
+import br.com.walkito.simulol.models.enums.ErroMessages;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.http.HttpStatus;
 

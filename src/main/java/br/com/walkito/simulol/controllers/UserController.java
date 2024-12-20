@@ -13,11 +13,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path = "/gameSessions")
-    public ApiResponse getGameSessions(@RequestParam(name = "id") String id){
-        return userService.getGameSessions(id);
-    }
-
     @PostMapping
     public ApiResponse createUser(@RequestBody User user){
         return userService.createUser(user);

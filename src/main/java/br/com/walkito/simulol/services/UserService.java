@@ -1,7 +1,6 @@
 package br.com.walkito.simulol.services;
 
-import br.com.walkito.simulol.models.ErroMessages;
-import br.com.walkito.simulol.models.gameSession.GameSession;
+import br.com.walkito.simulol.models.enums.ErroMessages;
 import br.com.walkito.simulol.models.user.LoginDTO;
 import br.com.walkito.simulol.models.user.User;
 import br.com.walkito.simulol.models.user.UserRepository;
@@ -11,9 +10,7 @@ import br.com.walkito.simulol.utils.ApiResponse;
 import br.com.walkito.simulol.utils.DefaultResponse;
 import br.com.walkito.simulol.utils.Utils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,9 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -128,25 +122,4 @@ public class UserService {
 
         return new ApiResponse(response);
     }
-
-    public ApiResponse getGameSessions(String id){
-        DefaultResponse response = new DefaultResponse();
-
-        try{
-            Optional<User> user = userRepository.findById(id);
-
-            if(user.isPresent()){
-                List<GameSession> gameSessions = user.get().getGameSessions();
-
-                response.setMessage("Sessões encontradas com sucesso!");
-                response.setObject(gameSessions);
-                response.setHttpStatusCode(HttpStatus.OK.value());
-            }
-        } catch (Exception e){
-            response = Utils.getDefaultErrorResponse(e);
-        }
-
-        return new ApiResponse(response);
-    }
-
 }
